@@ -2,11 +2,25 @@ import requests
 import tkinter as tk
 from tkinter import messagebox, ttk
 import subprocess
+from activacion_sistema import activacion_sistema
 
 
-def open_keyboard():
-    """Abre el teclado virtual."""
+def open_keyboard(entry_widget):
+    """Abre el teclado virtual y actualiza el texto en la parte superior."""
     global keyboard_process
+    top_label.config(text="vacio",bg="#09f",highlightthickness=1)
+
+    # Actualizar el texto dinámicamente en el label superior
+    def update_text(*args):
+        top_label.config(text=entry_widget.get(),bg="#09f")
+
+    # Conectar el evento de escritura al Entry para actualizar el texto
+    entry_widget.bind("<KeyRelease>", lambda event: update_text())
+    
+    # Mostrar el texto inicial del Entry en el label superior
+    top_label.config(text=entry_widget.get())
+
+    # Inicia el teclado virtual Onboard si no está activo
     if keyboard_process is None:
         keyboard_process = subprocess.Popen(["onboard"])
 
@@ -17,6 +31,8 @@ def close_keyboard():
     if keyboard_process is not None:
         keyboard_process.terminate()
         keyboard_process = None
+    # Borra el texto del Label superior
+    top_label.config(text="",bg="#30a99b")
 
 
 def confirmar():
@@ -26,7 +42,7 @@ def confirmar():
 
     data = {"nombre": nombre, "contraseña": password}
 
-    url = "http://192.168.100.16:8000/login"
+    url = "http://10.87.19.132:8000/login"
 
     # Enviar solicitud POST
     response = requests.post(url, json=data)
@@ -34,7 +50,8 @@ def confirmar():
     if response.status_code == 200:
         print("Datos enviados correctamente:", response.json())
         messagebox.showinfo("Confirmación", f"¡Inicio de sesión exitoso!")
-        mostrar_hola()  # Cambia la interfaz para mostrar "HOLA"
+        
+        activacion_sistema(root)  # Cambia la interfaz para mostrar "HOLA"
     else:
         print("Error en el envío:", response.status_code, response.text)
         messagebox.showerror("Error", "Credenciales incorrectas")
@@ -97,17 +114,21 @@ login_frame = tk.LabelFrame(left_frame, text="Inicio de Sesión",fg="#a7043a",fo
 login_frame.config(bg="#30a99b")
 login_frame.pack(fill="both", expand=True, padx=0, pady=0)
 
+# Label superior para mostrar el texto actual del Entry
+top_label = tk.Entry(login_frame, text="", font=("Arial", 18),bd=0,highlightthickness=0,fg="black",bg="#30a99b")
+top_label.place(relx=0.05,rely=0.02,relwidth=0.9,relheight=0.1)
+
 
 tk.Label(login_frame, text="Nombre:",font=("Arial", 15),fg="#a7043a",bg='#30a99b').place(relx=0.26,rely=0.2)
 nombre_entry = tk.Entry(login_frame)
 nombre_entry.place(relx=0.075,rely=0.3,relwidth=0.85,relheight=0.1)
-nombre_entry.bind("<FocusIn>", lambda event: open_keyboard())
+nombre_entry.bind("<FocusIn>", lambda event: open_keyboard(nombre_entry))
 nombre_entry.bind("<FocusOut>", lambda event: close_keyboard())
 
 tk.Label(login_frame, text="Contraseña:",font=("Arial", 15),fg="#a7043a",bg="#30a99b").place(relx=0.18,rely=0.4)
 password_entry = tk.Entry(login_frame, show="*")
 password_entry.place(relx=0.075,rely=0.5,relwidth=0.85,relheight=0.1)
-password_entry.bind("<FocusIn>", lambda event: open_keyboard())
+password_entry.bind("<FocusIn>", lambda event: open_keyboard(password_entry))
 password_entry.bind("<FocusOut>", lambda event: close_keyboard())
 
 btnInicio = tk.Button(login_frame, text="Confirmar",fg="#a7043a",command=confirmar)

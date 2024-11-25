@@ -4,3 +4,6 @@ numpy
 spidev
 pyserial
 onboard
+matplotlib
+numpy
+
