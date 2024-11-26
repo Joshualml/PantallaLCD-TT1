@@ -8,8 +8,9 @@ import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import threading
 import numpy as np
+from calculo_presion import calculo_presion
 
-def activacion_sistema(root):
+def activacion_sistema(root,id_usuario):
     # Eliminar todos los widgets de la ventana
     for widget in root.winfo_children():
         widget.destroy()
@@ -19,16 +20,16 @@ def activacion_sistema(root):
     time.sleep(2)  # Espera a que se establezca la conexión serial
 
     # Configurar SPI para MCP3204
-    ##spi = spidev.SpiDev()
-    ##spi.open(1, 2)
-    ##spi.max_speed_hz = 1350000
+    spi = spidev.SpiDev()
+    spi.open(1, 0)
+    spi.max_speed_hz = 1350000
 
     # Listas para almacenar las lecturas de los sensores
     Sensor1 = []
     Sensor2 = []
     # Variable para controlar la animación
     ani = None
-    timelaps = 2000  # Límite en x
+    timelaps = 100  # Límite en x
     def activar_bomba():
         """Envía el comando para activar la bomba y comienza la animación"""
         global ani
@@ -125,6 +126,7 @@ def activacion_sistema(root):
         return ln1, ln2
 
     def update(frame):
+        global id_usuario
         # Leer los datos de los dos canales
         lectura_ch1 = analogRead(0)
         lectura_ch2 = analogRead(1)
@@ -135,12 +137,13 @@ def activacion_sistema(root):
             Sensor2.append(lectura_ch2)
         else:
             # Detener la animación al llenar las listas
-            ani.event_source.stop()
             print("Límite alcanzado, guardando datos...")
 
             # Guardar los datos en archivos CSV
-            np.savetxt("grafica5.csv", Sensor1, delimiter=",", header="Valor", comments="")
-            np.savetxt("grafica6.csv", Sensor2, delimiter=",", header="Valor", comments="")
+            ##np.savetxt("grafica5.csv", Sensor1, delimiter=",", header="Valor", comments="")
+            ##np.savetxt("grafica6.csv", Sensor2, delimiter=",", header="Valor", comments="")
+            calculo_presion(Sensor1,Sensor2,id_usuario)
+            ani.event_source.stop()
             return ln1, ln2  # No actualizar más después de guardar
 
         # Agregar datos a los arreglos correspondientes

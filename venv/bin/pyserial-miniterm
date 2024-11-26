@@ -1,4 +1,4 @@
-#!/home/PRESION/Desktop/PantallaLCD/venv/bin/python
+#!/home/PRESION/Desktop/PantallaLCD-TT1/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

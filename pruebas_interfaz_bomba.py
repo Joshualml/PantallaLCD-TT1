@@ -14,9 +14,9 @@ arduino = serial.Serial('/dev/serial0', 9600, timeout=1)
 time.sleep(2)  # Espera a que se establezca la conexión serial
 
 # Configurar SPI para MCP3204
-##spi = spidev.SpiDev()
-##spi.open(1, 2)
-##spi.max_speed_hz = 1350000
+spi = spidev.SpiDev()
+spi.open(1, 0)
+spi.max_speed_hz = 1350000
 
 # Listas para almacenar las lecturas de los sensores
 Sensor1 = []
@@ -69,7 +69,7 @@ def cerrar():
 
 # Configurar la interfaz gráfica principal
 root = tk.Tk()
-#root.attributes("-fullscreen", True)
+root.attributes("-fullscreen", True)
 root.configure(bg="black")
 
 # Crear un frame para los botones (1/3 de la pantalla)

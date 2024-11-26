@@ -42,19 +42,23 @@ def confirmar():
 
     data = {"nombre": nombre, "contraseña": password}
 
-    url = "http://10.87.19.132:8000/login"
+    url = "http://10.87.30.203:8000/login"
 
     # Enviar solicitud POST
     response = requests.post(url, json=data)
 
     if response.status_code == 200:
         print("Datos enviados correctamente:", response.json())
+        data = response.json()
+        print(data['id'])
         messagebox.showinfo("Confirmación", f"¡Inicio de sesión exitoso!")
+        id_usuario = data['id']
         
-        activacion_sistema(root)  # Cambia la interfaz para mostrar "HOLA"
+        activacion_sistema(root,id_usuario)  # Cambia la interfaz para mostrar "HOLA"
     else:
         print("Error en el envío:", response.status_code, response.text)
         messagebox.showerror("Error", "Credenciales incorrectas")
+    
 
 
 def scan_networks():
@@ -85,19 +89,9 @@ def connect_to_wifi():
         messagebox.showerror("Error de conexión", "No se pudo conectar a la red.\n" + result.stderr)
 
 
-def mostrar_hola():
-    """Cambia la interfaz para mostrar un mensaje 'HOLA'."""
-    # Eliminar todos los widgets de la ventana
-    for widget in root.winfo_children():
-        widget.destroy()
-
-    # Mostrar mensaje central
-    tk.Label(root, text="HOLA", font=("Arial", 24), fg="blue").pack(expand=True)
-
-
 # Crear la ventana principal
 root = tk.Tk()
-root.geometry("480x320")
+root.geometry("1280x720")
 #root.overrideredirect(True)
 
 keyboard_process = None
