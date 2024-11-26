@@ -55,7 +55,7 @@ def calculo_presion(data1,data2,id_usuario):
     url = "http://10.87.30.203:8000/data_user"
 
     # Datos generados
-    data = {"id_usuario":id_usuario,"presion_sistolica": presion_diastolica_final, "presion_diastolica": presion_diastolica_final}
+    data = {"id_usuario":id_usuario,"presion_sistolica": presion_sistolica_final, "presion_diastolica": presion_diastolica_final}
 
     # Enviar solicitud POST
     response = requests.post(url, json=data)

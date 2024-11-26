@@ -53,6 +53,7 @@ def confirmar():
         print(data['id'])
         messagebox.showinfo("Confirmación", f"¡Inicio de sesión exitoso!")
         id_usuario = data['id']
+        print(id_usuario)
         
         activacion_sistema(root,id_usuario)  # Cambia la interfaz para mostrar "HOLA"
     else:

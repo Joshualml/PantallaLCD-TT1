@@ -11,6 +11,7 @@ import numpy as np
 from calculo_presion import calculo_presion
 
 def activacion_sistema(root,id_usuario):
+
     # Eliminar todos los widgets de la ventana
     for widget in root.winfo_children():
         widget.destroy()
@@ -28,8 +29,10 @@ def activacion_sistema(root,id_usuario):
     Sensor1 = []
     Sensor2 = []
     # Variable para controlar la animación
+    id_usuario1 = id_usuario
+    print("Esto",id_usuario1)
     ani = None
-    timelaps = 100  # Límite en x
+    timelaps = 600  # Límite en x
     def activar_bomba():
         """Envía el comando para activar la bomba y comienza la animación"""
         global ani
@@ -42,7 +45,7 @@ def activacion_sistema(root,id_usuario):
             time.sleep(0.1)
 
             # Inicia la animación al presionar el botón
-            ani = animation.FuncAnimation(fig, update, frames=range(timelaps), init_func=init, blit=True, interval=50)
+            ani = animation.FuncAnimation(fig, update, frames=range(timelaps), init_func=init,fargs=(id_usuario1,), blit=True, interval=50)
             canvas.draw()
 
             # Inicia la verificación del estado en un hilo separado
@@ -125,8 +128,8 @@ def activacion_sistema(root,id_usuario):
         ln2.set_data([], [])
         return ln1, ln2
 
-    def update(frame):
-        global id_usuario
+    def update(frame,id_usuario1):
+        #print(id_usuario1)
         # Leer los datos de los dos canales
         lectura_ch1 = analogRead(0)
         lectura_ch2 = analogRead(1)
@@ -142,7 +145,7 @@ def activacion_sistema(root,id_usuario):
             # Guardar los datos en archivos CSV
             ##np.savetxt("grafica5.csv", Sensor1, delimiter=",", header="Valor", comments="")
             ##np.savetxt("grafica6.csv", Sensor2, delimiter=",", header="Valor", comments="")
-            calculo_presion(Sensor1,Sensor2,id_usuario)
+            calculo_presion(Sensor1,Sensor2,id_usuario1)
             ani.event_source.stop()
             return ln1, ln2  # No actualizar más después de guardar
 
